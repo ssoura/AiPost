@@ -7,14 +7,24 @@ import {
   SignedOut,
   SignedIn,
   useAuth,
+  useUser,
 } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { Menu, X, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+import {
+  getUserPoints,
+  updateUserPoints,
+} from "@/utils/db/actions";
 
 export function Navbar() {
   const { userId } = useAuth();
+  const { isLoaded, isSignedIn, user } = useUser();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [userPoints, setUserPoints] = useState<number | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,11 +34,27 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (isSignedIn && user) {
+      console.log("User loaded:", user);
+      fetchUserPoints();
+    }
+  }, [isSignedIn, user]);
+
+
+  const fetchUserPoints = async () => {
+    if (user?.id) {
+      console.log("Fetching points for user:", user.id);
+      const points = await getUserPoints(user.id);
+      console.log("Fetched points:", points);
+      setUserPoints(points);
+    }
+  };
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-gray-900/80 backdrop-blur-md" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-gray-900/80 backdrop-blur-md" : "bg-transparent"
+        }`}
     >
       <nav className="container mx-auto px-4 sm:px-8 py-4 sm:py-6">
         <div className="flex flex-wrap justify-between items-center max-w-6xl mx-auto">
@@ -51,9 +77,8 @@ export function Navbar() {
             )}
           </button>
           <div
-            className={`w-full sm:w-auto ${
-              isMenuOpen ? "block" : "hidden"
-            } sm:block mt-4 sm:mt-0`}
+            className={`w-full sm:w-auto ${isMenuOpen ? "block" : "hidden"
+              } sm:block mt-4 sm:mt-0`}
           >
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-8">
               {["Features", "Pricing", "Docs"].map((item) => (
@@ -87,14 +112,29 @@ export function Navbar() {
                   </button>
                 </SignUpButton>
               </SignedOut>
-              <SignedIn>
-                <UserButton
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-10 h-10",
-                    },
-                  }}
-                />
+              <SignedIn >
+                <div className="flex items-center space-x-2">
+                  <div className="bg-gray-800 p-1 rounded-full flex items-center justify-between gap-2">
+                    <div className="flex items-center">
+                      <Zap className="h-8 w-8 text-yellow-400 mr-3" />
+                      <div>
+                        <p className="text-2xl font-bold text-yellow-400">
+                          {userPoints !== null ? userPoints : "Loading..."}
+                        </p>
+                      </div>
+                    </div>
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded-full transition-colors">
+                      <Link href="/pricing">Get More Points</Link>
+                    </Button>
+                  </div>
+                  <UserButton
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-10 h-10",
+                      },
+                    }}
+                  />
+                </div>
               </SignedIn>
             </div>
           </div>

@@ -319,7 +319,7 @@ export default function GenerateContent() {
           {/* Main content area */}
           <div className="lg:col-span-2 space-y-6">
             {/* Points display */}
-            <div className="bg-gray-800 p-6 rounded-2xl flex items-center justify-between">
+            {/* <div className="bg-gray-800 p-6 rounded-2xl flex items-center justify-between">
               <div className="flex items-center">
                 <Zap className="h-8 w-8 text-yellow-400 mr-3" />
                 <div>
@@ -332,7 +332,7 @@ export default function GenerateContent() {
               <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded-full transition-colors">
                 <Link href="/pricing">Get More Points</Link>
               </Button>
-            </div>
+            </div> */}
 
             {/* Content generation form */}
             <div className="bg-gray-800 p-6 rounded-2xl space-y-6">
