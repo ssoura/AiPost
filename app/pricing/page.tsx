@@ -99,7 +99,7 @@ export default function PricingPage() {
                 {plan.name}
               </h2>
               <p className="text-4xl font-bold mb-6 text-white">
-                ${plan.price}
+              ₹{plan.price}
                 <span className="text-lg font-normal text-gray-400">
                   /month
                 </span>
